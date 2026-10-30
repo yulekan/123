@@ -1,0 +1,105 @@
+﻿@startuml
+skinparam dpi 150
+skinparam defaultFontName "Segoe UI"
+skinparam shadowing false
+hide circle
+skinparam linetype ortho
+skinparam entity {
+  BackgroundColor #FBFBFC
+  BorderColor #212529
+  FontSize 13
+}
+
+entity "Department\n(Цех)" as dep {
+  * IdDepartment : INTEGER <<PK>>
+  --
+  Name : TEXT
+  Description : TEXT
+}
+
+entity "Position\n(Должность)" as pos {
+  * IdPosition : INTEGER <<PK>>
+  --
+  Name : TEXT
+  IdDepartment : INTEGER <<FK>>
+}
+
+entity "Employee\n(Сотрудник)" as emp {
+  * IdEmployee : INTEGER <<PK>>
+  --
+  FullName : TEXT
+  IdPosition : INTEGER <<FK>>
+  HireDate : TEXT
+  IsActive : INTEGER
+}
+
+entity "Supplier\n(Поставщик)" as sup {
+  * IdSupplier : INTEGER <<PK>>
+  --
+  Name : TEXT
+  INN : TEXT
+  Phone : TEXT
+  Address : TEXT
+}
+
+entity "PPEItem\n(Вид СИЗ)" as item {
+  * IdPPEItem : INTEGER <<PK>>
+  --
+  Name : TEXT
+  Unit : TEXT
+  StockQty : INTEGER
+  MinStock : INTEGER
+  IdSupplier : INTEGER <<FK>>
+}
+
+entity "IssueNorm\n(Норма выдачи)" as norm {
+  * IdNorm : INTEGER <<PK>>
+  --
+  IdPPEItem : INTEGER <<FK>>
+  IdPosition : INTEGER <<FK>>
+  QtyPerYear : INTEGER
+  WearPeriodMonths : INTEGER
+}
+
+entity "PPEIssue\n(Выдача СИЗ)" as issue {
+  * IdIssue : INTEGER <<PK>>
+  --
+  IdEmployee : INTEGER <<FK>>
+  IdPPEItem : INTEGER <<FK>>
+  IdNorm : INTEGER <<FK>>
+  IssueDate : TEXT
+  Qty : INTEGER
+  ReturnDate : TEXT
+  Status : TEXT
+  ReceivedDate : TEXT
+}
+
+entity "AuditLog\n(Журнал действий)" as audit {
+  * IdAudit : INTEGER <<PK>>
+  --
+  Action : TEXT
+  Details : TEXT
+  CreatedAt : TEXT
+}
+
+entity "Supply\n(Приход СИЗ)" as supplyit {
+  * IdSupply : INTEGER <<PK>>
+  --
+  IdSupplier : INTEGER <<FK>>
+  IdPPEItem : INTEGER <<FK>>
+  SupplyDate : TEXT
+  Qty : INTEGER
+  Price : REAL
+}
+
+dep ||--o{ pos
+pos ||--o{ emp
+pos ||--o{ norm
+item ||--o{ norm
+sup ||--o{ item
+sup ||--o{ supplyit
+item ||--o{ supplyit
+emp ||--o{ issue
+item ||--o{ issue
+norm ||--o{ issue
+@enduml

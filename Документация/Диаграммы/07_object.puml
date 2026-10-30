@@ -1,0 +1,50 @@
+﻿@startuml
+left to right direction
+skinparam dpi 150
+skinparam defaultFontName "Segoe UI"
+skinparam shadowing false
+skinparam object {
+  BackgroundColor #FFFFFF
+  BorderColor #212529
+  FontSize 14
+  HeaderBackgroundColor #EAF2FB
+}
+skinparam note {
+  BackgroundColor #FFFDF3
+  BorderColor #C9A227
+}
+
+object "Иванов И.И.\n: Сотрудник" as emp {
+  IdEmployee = 1
+  FullName = "Иванов Иван Иванович"
+  HireDate = 12.01.2024
+  IsActive = да
+}
+object "Обвальщик\n: Должность" as pos {
+  IdPosition = 3
+  Name = "Обвальщик"
+}
+object "Халат х/б\n: Вид СИЗ" as item {
+  IdPPEItem = 1
+  Name = "Халат х/б"
+  Unit = "шт"
+  StockQty = 48
+}
+object "Норма № 1\n: Норма выдачи" as norm {
+  IdNorm = 1
+  QtyPerYear = 2
+  WearPeriodMonths = 12
+}
+object "Выдача № 1\n: Выдача СИЗ" as issue {
+  IdIssue = 1
+  IssueDate = 15.09.2026
+  Qty = 2
+  Status = "Выдана"
+}
+
+emp -- pos : должность
+pos -- norm : норма
+item -- norm : норма
+emp -- issue : получает
+item -- issue : вид СИЗ
+@enduml

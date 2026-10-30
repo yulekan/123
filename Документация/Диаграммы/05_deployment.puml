@@ -1,0 +1,38 @@
+﻿@startuml
+skinparam dpi 150
+skinparam defaultFontName "Segoe UI"
+skinparam shadowing false
+skinparam linetype ortho
+skinparam node {
+  BackgroundColor #EAF2FB
+  BorderColor #212529
+  FontSize 14
+}
+skinparam artifact {
+  BackgroundColor #FFFFFF
+  BorderColor #495057
+  FontSize 13
+}
+skinparam database {
+  BackgroundColor #FFFFFF
+  BorderColor #495057
+  FontSize 13
+}
+skinparam component {
+  BorderColor #495057
+}
+
+node "Рабочая станция специалиста\nпо охране труда\nWindows 10 / 11" as ws {
+  artifact "PPEAccounting.exe\nWinForms, .NET Framework 4.8" as app
+  artifact "System.Data.SQLite.dll\nSQLite.Interop.dll" as lib
+  database "ppe.db" as db
+}
+
+node "Файловый сервер\nрезервное копирование" as srv {
+  artifact "Архив ppe.db\nежедневная копия" as backup
+}
+
+app ..> lib : использует
+app ..> db : ADO.NET
+db ..> backup : копирование
+@enduml

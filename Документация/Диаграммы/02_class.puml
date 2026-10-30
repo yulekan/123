@@ -1,0 +1,127 @@
+﻿@startuml
+skinparam dpi 150
+skinparam defaultFontName "Segoe UI"
+skinparam shadowing false
+hide circle
+skinparam classAttributeIconSize 0
+skinparam nodesep 28
+skinparam ranksep 40
+skinparam padding 4
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #212529
+  ArrowColor #212529
+  FontSize 14
+  HeaderBackgroundColor #EAF2FB
+}
+skinparam package {
+  BackgroundColor #FFFFFF
+  BorderColor #6C757D
+  FontSize 16
+  BorderThickness 1.5
+}
+
+package "Предметная область" {
+  class "Подразделение\nDepartment" as Department {
+    IdDepartment : int
+    Name : string
+  }
+  class "Должность\nPosition" as Position {
+    IdPosition : int
+    Name : string
+    IdDepartment : int
+  }
+  class "Сотрудник\nEmployee" as Employee {
+    IdEmployee : int
+    FullName : string
+    HireDate : DateTime
+    IsActive : bool
+    IdPosition : int
+  }
+  class "Поставщик\nSupplier" as Supplier {
+    IdSupplier : int
+    Name : string
+    INN : string
+    Phone : string
+  }
+  class "Вид СИЗ\nPPEItem" as PPEItem {
+    IdPPEItem : int
+    Name : string
+    Unit : string
+    StockQty : int
+    MinStock : int
+    IdSupplier : int
+  }
+  class "Норма выдачи\nIssueNorm" as IssueNorm {
+    IdNorm : int
+    IdPosition : int
+    IdPPEItem : int
+    QtyPerYear : int
+    WearPeriodMonths : int
+  }
+  class "Выдача СИЗ\nPPEIssue" as PPEIssue {
+    IdIssue : int
+    IdEmployee : int
+    IdPPEItem : int
+    IdNorm : int
+    IssueDate : DateTime
+    Qty : int
+    ReturnDate : DateTime
+    Status : string
+    ReceivedDate : DateTime
+  }
+  class "Приход СИЗ\nSupply" as Supply {
+    IdSupply : int
+    IdPPEItem : int
+    IdSupplier : int
+    SupplyDate : DateTime
+    Qty : int
+    Price : decimal
+  }
+}
+
+package "Слои приложения" {
+  class "Сервис выдачи\nIssueService" as IssueService {
+    Issue(empId, itemId, qty, date)
+    Return(issueId, date)
+    GetJournal(filter)
+    GetAvailability(empId, itemId)
+  }
+  class "Сервис прихода\nStockService" as StockService {
+    RegisterSupply(itemId, supplierId,\nqty, price, date)
+  }
+  class "Доступ к данным\nDatabase" as Database {
+    Query(sql)
+    Execute(sql)
+    InTransaction(action)
+  }
+  class "Сервис журнала\nAuditService" as AuditService {
+    Write(action, details)
+  }
+  class "Фабрика отчётов\nReportFactory" as ReportFactory {
+    Build(reportKind, filter)
+  }
+  class "Печатный документ\nReportDocument" as ReportDocument {
+    AddTitle(text)
+    AddTable(rows)
+    Save(path)
+  }
+}
+
+Department "1" -- "0..*" Position
+Position "1" -- "0..*" Employee
+Position "1" -- "0..*" IssueNorm
+PPEItem "1" -- "0..*" IssueNorm
+Supplier "1" -- "0..*" PPEItem
+Supplier "1" -- "0..*" Supply
+PPEItem "1" -- "0..*" Supply
+Employee "1" -- "0..*" PPEIssue
+PPEItem "1" -- "0..*" PPEIssue
+IssueNorm "1" -- "0..*" PPEIssue
+
+IssueService ..> Database : SQL
+StockService ..> Database : SQL
+AuditService ..> Database : SQL
+ReportFactory ..> Database : SQL
+ReportFactory ..> ReportDocument : создаёт
+@enduml

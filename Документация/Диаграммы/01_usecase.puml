@@ -1,0 +1,55 @@
+﻿@startuml
+left to right direction
+skinparam defaultFontName "Segoe UI"
+skinparam dpi 150
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor #F4F6F8
+  BorderColor #212529
+  FontSize 14
+}
+skinparam actor {
+  BackgroundColor #FFFFFF
+  BorderColor #212529
+  FontSize 14
+}
+skinparam rectangle {
+  BackgroundColor #FFFFFF
+  BorderColor #6C757D
+}
+
+actor "Кладовщик" as Store
+actor "Специалист\nпо охране труда" as Osh
+actor "Техник-программист\n(администратор)" as Admin
+
+rectangle "Информационная система учёта спецодежды и СИЗ" {
+  usecase "Вести карточки\nсотрудников" as UC1
+  usecase "Вести номенклатуру\nСИЗ" as UC2
+  usecase "Оформлять приход\nСИЗ" as UC3
+  usecase "Задавать нормы\nвыдачи" as UC4
+  usecase "Оформлять выдачу\nСИЗ" as UC5
+  usecase "Оформлять возврат\nСИЗ" as UC6
+  usecase "Просматривать журнал\nвыдачи" as UC7
+  usecase "Проверять норму\nи остаток" as UC8
+  usecase "Вести справочник\nпоставщиков" as UC9
+  usecase "Формировать\nотчёты" as UC10
+  usecase "Отмечать получение\nСИЗ" as UC11
+}
+
+Store --> UC1
+Store --> UC2
+Store --> UC3
+Store --> UC5
+Store --> UC6
+Store --> UC7
+Osh --> UC4
+Osh --> UC7
+Osh --> UC10
+Osh --> UC11
+Admin --> UC2
+Admin --> UC9
+
+UC5 ..> UC8 : <<include>>
+UC6 ..> UC8 : <<include>>
+@enduml

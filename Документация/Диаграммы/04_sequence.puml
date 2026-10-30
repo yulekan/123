@@ -1,0 +1,46 @@
+﻿@startuml
+skinparam dpi 150
+skinparam defaultFontName "Segoe UI"
+skinparam shadowing false
+hide footbox
+skinparam participant {
+  BackgroundColor #EAF2FB
+  BorderColor #212529
+  FontSize 14
+}
+skinparam actor {
+  BackgroundColor #FFFFFF
+  BorderColor #212529
+  FontSize 14
+}
+skinparam sequence {
+  ArrowColor #212529
+  LifeLineBorderColor #6C757D
+  LifeLineBackgroundColor #FFFFFF
+  GroupBorderColor #6C757D
+  FontSize 13
+}
+
+actor "Кладовщик" as User
+participant "Форма\n«Журнал выдачи»" as UI
+participant "Модуль выдачи\nIssueService" as Service
+participant "Транзакции\nDatabase" as Db
+database "База данных\nSQLite" as Sqlite
+
+User -> UI : оформить выдачу
+UI -> UI : проверить заполнение полей
+UI -> Service : выдать (сотрудник, СИЗ,\nколичество, дата)
+Service -> Db : начать транзакцию
+Service -> Sqlite : запросить норму и выдачу\nза последние 12 месяцев
+Sqlite --> Service : норма, выдано
+alt норма превышена или остатка мало
+  Service --> UI : отказ с причиной
+  UI --> User : предупреждение
+else данные корректны
+  Service -> Sqlite : уменьшить остаток\nи добавить запись в журнал
+  Sqlite --> Service : номер записи
+  Service -> Db : зафиксировать изменения
+  Service --> UI : успех
+  UI --> User : «Выдача оформлена»
+end
+@enduml

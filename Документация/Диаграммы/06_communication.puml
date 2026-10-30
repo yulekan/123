@@ -1,0 +1,28 @@
+﻿@startuml
+skinparam dpi 150
+skinparam defaultFontName "Segoe UI"
+skinparam shadowing false
+skinparam object {
+  BackgroundColor #F8F9FA
+  BorderColor #212529
+  FontSize 13
+}
+
+object "1: Форма «Журнал выдачи»" as form
+object "2: IssueService" as service
+object "3: Database" as db
+object "4: PPEIssue" as issue
+object "5: PPEItem" as item
+
+form -> service : 1: Issue(employeeId, itemId, qty, date)
+service -> db : 2: InTransaction()
+service -> item : 3: проверить и уменьшить остаток
+service -> issue : 4: создать запись о выдаче
+service --> form : 5: OperationResult
+
+note right of service
+  Проверка нормы за 12 месяцев
+  и остатка выполняется
+  в одной транзакции
+end note
+@enduml

@@ -1,0 +1,25 @@
+﻿@startuml
+skinparam dpi 150
+skinparam defaultFontName "Segoe UI"
+skinparam shadowing false
+left to right direction
+skinparam state {
+  BackgroundColor #EAF2FB
+  BorderColor #212529
+  FontSize 14
+}
+skinparam arrow {
+  Color #212529
+  FontSize 13
+}
+
+[*] --> Выдана : оформить выдачу\nостаток уменьшился,\nзапись создана
+Выдана : Status = "Выдана"
+Выдана : IssueDate = дата выдачи
+
+Выдана --> Возвращена : оформить возврат\nостаток увеличился,\nдата возврата заполнена
+Возвращена : Status = "Возвращена"
+Возвращена : ReturnDate = дата возврата
+
+Возвращена --> [*]
+@enduml
